@@ -21,8 +21,9 @@ impl<Acc, Input, F: FnMut(&mut Acc, Input)> Accum<Acc, Input, F> {
 impl<Acc: Clone, Input, F: FnMut(&mut Acc, Input)> StreamFunction for Accum<Acc, Input, F> {
     type Input = Input;
     type Output = Acc;
+    type Clock = ();
 
-    fn step(&mut self, input: Self::Input) -> Self::Output {
+    fn step(&mut self, input: Self::Input, _: Self::Clock) -> Self::Output {
         let acc = self.acc.clone();
         (self.f)(&mut self.acc, input);
         acc

@@ -10,7 +10,7 @@ fn test() {
     let result: Vec<_> = sum
         .and_then(squares)
         .fan_out(doubles)
-        .apply_to(vec![1,1,1].iter())
+        .apply_to(std::iter::repeat(()).zip(vec![1,1,1].iter()))
         .collect();
     assert_eq!(result, vec![
         (0, 2),
