@@ -10,7 +10,7 @@ use crate::composition::Composition;
 use crate::parallel::Parallel;
 
 #[allow(type_alias_bounds)]
-pub type Map<T: StreamFunction, U, C> = Composition<T, Fun<T::Output, U, C>>;
+pub type Map<T: StreamFunction, U> = Composition<T, Fun<T::Output, U, T::Clock>>;
 
 pub type Iter<SF> = Apply<core::iter::Repeat<((),())>, SF>;
 
@@ -23,7 +23,7 @@ pub trait StreamFunction {
 
     fn step(&mut self, input: Self::Input, clock: Self::Clock) -> Self::Output;
 
-    fn map<U, F, C>(self, f: F) -> Map<Self, U, C>
+    fn map<U, F>(self, f: F) -> Map<Self, U>
     where
         Self: Sized,
         F: 'static + Fn(Self::Output) -> U,
@@ -34,7 +34,7 @@ pub trait StreamFunction {
         }
     }
 
-    fn apply_to<I>(self, iterator: I) -> Apply<I, Self>
+    fn apply_to<Input, C, I: Iterator<Item=(Input, C)>>(self, iterator: I) -> Apply<I, Self>
     where
         Self: Sized,
     {
@@ -51,7 +51,7 @@ pub trait StreamFunction {
         self.apply_to(core::iter::repeat(((),())))
     }
 
-    fn and_then<SF: StreamFunction<Input=Self::Output>>(self, sf: SF) -> Composition<Self, SF>
+    fn and_then<SF: StreamFunction<Input=Self::Output, Clock=Self::Clock>>(self, sf: SF) -> Composition<Self, SF>
     where
         Self: Sized,
     {
