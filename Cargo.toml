@@ -3,6 +3,8 @@ name = "signal_functions"
 version = "0.1.0"
 authors = ["Manuel Bärenz <m.baerenz@sonnen.de>"]
 edition = "2018"
+description = "A crate for processing signals"
+license = "LGPL-3.0-or-later"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
