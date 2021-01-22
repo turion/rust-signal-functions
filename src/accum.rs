@@ -24,10 +24,11 @@ impl<Acc: Clone, Input, C, F: FnMut(&mut Acc, Input)> StreamFunction for Accum<A
     type Input = Input;
     type Output = Acc;
     type Clock = C;
+    type Error = (); // Actually I'd like to use !
 
-    fn step(&mut self, input: Self::Input, _: Self::Clock) -> Self::Output {
+    fn step(&mut self, input: Self::Input, _: Self::Clock) -> Result<Self::Output, Self::Error> {
         let acc = self.acc.clone();
         (self.f)(&mut self.acc, input);
-        acc
+        Ok(acc)
     }
 }
